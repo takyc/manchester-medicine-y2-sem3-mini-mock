@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manchester Medicine Year 2 – Semester 3 Mini Mock</title>
+
+<style>
+/* Base font & colors */
+html, body, div, p, span, strong, b, button, h1, h2, h3, h4 {
+    font-family: Arial, Helvetica, sans-serif !important;
+    color: #333;
+}
+
+strong, b {
+    font-weight: bold;
+}
+
+body {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+}
+
+/* Headers */
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+h4 {
+    text-align: center;
+    font-weight: normal;
+    color: #555;
+    margin-bottom: 40px;
+}
+
+/* Quiz container */
+#quiz-container {
+    width: 100%;
+}
+
+/* Question card */
+.question {
+    display: none;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+.question.active {
+    display: block;
+}
+.question:hover {
+    transform: translateY(-2px);
+}
+
+/* Question text */
+.question p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* Options buttons */
+.option {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.option:hover:not(.locked) {
+    background: #e0f7fa;
+    border-color: #00bcd4;
+}
+
+.option.correct {
+    background: #d4edda;
+    border-color: #28a745;
+}
+
+.option.wrong {
+    background: #f8d7da;
+    border-color: #dc3545;
+}
+
+.option.locked {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Feedback */
+.feedback {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    display: none;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Progress bar */
+#progress {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Next button */
+#next-btn {
+    display: none;
+    background-color: #0288d1;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 20px 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#next-btn:hover {
+    background-color: #0277bd;
+}
+
+/* Final score */
+#final-score {
+    display: none;
+    text-align: center;
+}
+#final-score h2 {
+    color: #0288d1;
+}
+#final-score p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+    .question {
+        padding: 20px;
+    }
+    .option {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+    }
+}
+</style>
+
+<script>
+let currentQuestion = 0;
+let score = 0;
+const questions = [];
+let nextBtn;
+
+window.onload = () => {
+    document.querySelectorAll(".question").forEach(q => questions.push(q));
+    questions[0].classList.add("active");
+    nextBtn = document.getElementById("next-btn");
+    updateProgress();
+};
+
+function selectAnswer(option, isCorrect) {
+    const question = option.closest(".question");
+    if (question.dataset.answered === "true") return;
+    question.dataset.answered = "true";
+
+    if (isCorrect) {
+        score++;
+        option.classList.add("correct");
+    } else {
+        option.classList.add("wrong");
+    }
+
+    question.querySelectorAll(".option").forEach(btn => {
+        btn.classList.add("locked");
+        btn.disabled = true;
+    });
+
+    const feedback = question.querySelector(".feedback");
+    if (feedback) feedback.style.display = "block";
+
+    nextBtn.style.display = "block";
+}
+
+document.addEventListener("click", function(e) {
+    if (e.target && e.target.id === "next-btn") {
+        questions[currentQuestion].classList.remove("active");
+        currentQuestion++;
+        nextBtn.style.display = "none";
+
+        if (currentQuestion < questions.length) {
+            questions[currentQuestion].classList.add("active");
+            updateProgress();
+        } else {
+            showFinalScore();
+        }
+    }
+});
+
+function updateProgress() {
+    const progress = document.getElementById("progress");
+    progress.innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
+}
+
+function showFinalScore() {
+    const percentage = ((score / questions.length) * 100).toFixed(0);
+    const container = document.getElementById("quiz-container");
+
+    container.innerHTML = `
+        <h2>Final Score: ${score}/${questions.length} (${percentage}%)</h2>
+        <p><strong>Thanks so much for completing this mini mock! I really hope it was helpful. Wishing you guys the best for lowkey the hardest exam of med school. If you have any questions or feedback, please message the Instagram @ManchesterHaemsoc</strong></p>
+    `;
+}
+</script>
+</head>
+
+<body>
+<h1>Manchester Medicine Year 2 – Semester 3 Mini Mock</h1>
+<h4>A challenging mock for the hardest Sem test in the course - neuro block. Questions in the style of Manchester's exam writers. In depth explanations for each correct and incorrect answer choice. Made by Manchester HaemSoc</h4>
+
+<div id="quiz-container">
+
+<div id="progress"></div>
+
+<!-- ================= QUESTIONS START HERE ================= -->
+
+<!-- QUESTIONS WILL BE INSERTED IN BLOCKS -->
+ <!-- Question 1 -->
+<div class="question">
+  <p><strong>1)	Which of the following could be an expected finding in a lower motor neuron lesion?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Fasciculations</button>
+  <button class="option" onclick="selectAnswer(this, false)">Pronator Drift</button>
+  <button class="option" onclick="selectAnswer(this, false)">Spastic Paralysis</button>
+  <button class="option" onclick="selectAnswer(this, false)">Hyperreflexia</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Fasciculations are a hallmark LMN lesion sign. They are rapid, involuntary muscle twitches under the skin that are too weak to move the limb but can be felt by the patient and seen by others. Other LMN signs include hyporeflexia, hypotonia, flaccid paralysis and marked muscle atrophy.</p>
+
+<p>Pronator drift is when supinated, extended arms pronate when the eyes close and are a sign of UMN lesion of the corticospinal tract.</p>
+
+<p>Hyperreflexia is seen in UMN lesion. Hyporeflexia is seen in LMN lesion.</p>
+ 
+
+<p>Spastic paralysis is seen in UMN lesion. This is where muscles are stiff and tight, instead of floppy and weak in flaccid paralysis (LMN lesion).</p>
+  </div>
+</div>
+
+
+<!-- Question 2 -->
+<div class="question">
+  <p><strong>2)	Which of the following is most likely to cause a Trendelenburg Gait?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Superior Gluteal Nerve Palsy</button>
+  <button class="option" onclick="selectAnswer(this, false)">Decrease in dopamine in the Basal Ganglia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Common Peroneal Nerve Injury</button>
+  <button class="option" onclick="selectAnswer(this, false)">Basilar Artery Stroke</button>
+
+  <div class="feedback" style="display:none;">
+    <p>A Trendelenburg Gait is where the pelvis is tilted to one side whilst walking. This occurs in weak hip abductor muscles (gluteus medius and minimus) and the pelvis drops to the contralateral side. The superior gluteal nerve supplies these two muscles, and therefore a LMN will cause weakness and a Trendelenburg gait.</p>
+    <p>A decrease in dopamine in the Basal Ganglia describes Parkinson’s. Parkinson’s has a distinct “shuffling” gait as opposed to a tilted hip.</p>
+    <p>An injury to the common peroneal nerve would cause foot drop and a high steppage gait. This is because it weakens the dorsiflexors of the foot.</p>
+    <p>A basilar artery stroke would cause much more severe symptoms than a gait. Basilar artery stroke can cause locked in syndrome where there is complete paralysis apart from vertical eye movements and blinking.</p>
+  </div>
+</div>
+
+<!-- Question 3 -->
+<div class="question">
+  <p><strong>3)	A 25 year old woman is brought into hospital by her university after physically attacking a teacher. She claims that God has chosen her to fight off evil spirits. Her parents, who she lives with, mention that she has not slept in 5 days but has been extremely energetic and irritable during this period. They said this was strange as she seemed very passive beforehand. When questioned, she speaks very loudly and jumps rapidly between topics that seem disjointed.</strong></p>
+  <p><strong>Which diagnosis aligns with her history?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Mania</button>
+  <button class="option" onclick="selectAnswer(this, false)">Schizophrenia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Hypomania</button>
+  <button class="option" onclick="selectAnswer(this, false)">Schizoaffective disorder</button>
+
+  <div class="feedback" style="display:none;">
+    <p>The correct answer is a manic episode as she has required hospitalisation and has grandiose delusions. She has classic symptoms of bipolar disorder with an elevated mood, increased energy, decreased need for sleep, pressured speech and a flight of ideas. This would be bipolar disorder type 1.</p>
+    <p>Although the symptoms are < 1 week, this is not hypomania because she has required a hospitalisation and there is evidence of grandiose delusions. </p>
+    <p>Schizophrenia requires >6 months of symptoms and the mood symptoms do not align with the classic negative symptoms of schizophrenia.</p>
+    <p>Schizoaffective disorder requires a period of at least 2 weeks of psychosis without mood symptoms, to then develop significant mood episodes. There is no evidence of this in the vignette. </p>
+  </div>
+</div>
+
+<!-- Question 4 -->
+<div class="question">
+  <p><strong>4)	She is treated for an acute episode of mania with 2.5mg IM haloperidol. 
+Which of the following is NOT a potential complication of haloperidol?
+</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Neuroleptic Malignant Syndrome</button>
+  <button class="option" onclick="selectAnswer(this, false)">Cardiac Arrhythmia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Parkinsonism</button>
+  <button class="option" onclick="selectAnswer(this, true)">Serotonin Syndrome</button>
+
+  <div class="feedback" style="display:none;">
+   <p>Haloperidol is a first generation (typical) antipsychotic. It’s mechanism of action is antagonism of overactive D2 receptors in the mesolimbic system.</p>
+
+<p>This can cause side effects such as Parkinsonism (where there is a deficiency of dopamine in the basal ganglia).</p>
+
+<p>Haloperidol also increases the QT interval, potentially causing Torsade’s de Pointes (a type of polymorphic ventricular tachycardia)</p>
+
+<p>Haloperidol also increases risk of NMS. Recall that NMS presents as fever, tachycardia, altered mental status, increased tone (lead pipe rigidity) and rhabdomyolysis. Because it causes rhabdomyolysis, one of the primary ways to confirm NMS is to check for serum creatine kinase.</p>
+<p>Serotonin syndrome is not primarily caused by typical antipsychotics, it is instead caused by SSRI’s, SNRI’s, MAOIs and illicit drugs such as ecstasy, cocaine, meth and LSD. The clue is in the name – drugs that increase serotonin cause serotonin syndrome. Haloperidol primarily affects dopamine.</p>
+<p>Serotonin syndrome causes fever and tachycardia like NMS but presents with tremor, myoclonus and GI symptoms like diarrhoea. It also has an onset within 24 hours compared to NMS which develops over days to weeks.</p>
+
+  </div>
+</div>
+
+<!-- Question 5 -->
+<div class="question">
+  <p><strong>5)	A 6 month old child presents with an abnormally large head and a prominent, bulging forehead.  MRI reveals herniation of the cerebellar tonsils and myelomeningocele.</strong></p><p><strong> Which type of Chiari Malformation does this describe?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Chiari Malformation Type 1</button>
+  <button class="option" onclick="selectAnswer(this, true)">Chiari Malformation Type 2</button>
+  <button class="option" onclick="selectAnswer(this, false)">Chiari Malformation Type 3</button>
+  <button class="option" onclick="selectAnswer(this, false)">Chiari Malformation Type 4</button>
+
+  <div class="feedback" style="display:none;">
+    <p>This is Chiari Malformation Type 2 or Arnold-Chiari Malformation. Herniation of the cerebellar tonsils has occurred due to spina bifida decreasing the CSF pressure, herniating the cerebellar tonsils. Almost always associated with myelomeningocele and causes hydrocephalus if the foramen magnum gets blocked.</p>
+<p>Chiari malformation type 1 is a downward displacement of the medulla and herniation of the tonsils only, found in teens/adults.</p>
+<p>Chiari malformation type 3 is further herniation of the cerebellum forming an encephalocele.</p>
+<p>Chiari malformation type 4 is hypoplasia or aplasia of the cerebellum due to spina bifida. Type 3 and 4 are very rare.</p>
+
+</div>
+</div>
+
+<!-- Question 6 -->
+<div class="question">
+  <p><strong>6)	A primigravida woman (pregnant for the first time) with a history of epilepsy comes into the GP asking about her anticonvulsant medications. Which of the following anticonvulsants are suitable for her?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Phenytoin</button>
+  <button class="option" onclick="selectAnswer(this, false)">Sodium Valproate</button>
+  <button class="option" onclick="selectAnswer(this, true)">Lamotrigine</button>
+  <button class="option" onclick="selectAnswer(this, false)">Carbamazepine</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Lamotrigine is considered safe in pregnancy. The other main pregnancy antiepileptic is levetiracetam.</p>
+<p>Sodium Valproate is known to cause birth defects due to folate antagonism and other pathways.</p>
+<p>Carbamazepine is contraindicated in pregnancy as it increases risk of birth defects compared to safer options like lamotrigine and levetiracetam.</p>
+<p>Phenytoin is also associated with congenital defects, most notably fetal hydantoin syndrome which presents as cleft lip, wide set eyes and a flat nasal bridge. It can also cause heart defects.</p>
+
+</div>
+</div>
+
+<!-- Question 7 -->
+<div class="question">
+  <p><strong>7)	An 18 year old male comes into the GP mentioning that he has had a low mood nearly every day for the past year and wishes to start on antidepressants. He is struggling to find fun in hobbies he used to enjoy and has struggled to sleep, finding himself waking up early in the morning. He says he has had thoughts of self-harming but never followed through. He denies suicidal ideations.</strong></p><p><strong> What is the most appropriate management?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Deny antidepressant therapy due to drug seeking behaviour</button>
+  <button class="option" onclick="selectAnswer(this, true)">Prescribe sertraline with routine review after 1 week </button>
+  <button class="option" onclick="selectAnswer(this, false)">Prescribe sertraline with routine review after 6 weeks </button>
+  <button class="option" onclick="selectAnswer(this, false)">Prescribe amitriptyline with routine review after 6 weeks</button>
+
+  <div class="feedback" style="display:none;">
+    <p>The history here is consistent with depression. There is a persistent low mood > 6 months, anhedonia and sleep disturbances. SSRI’s such as sertraline are firstline if the patient wants to be on medication.</p>
+<p>NICE guidelines recommend a checkup after 1 week for 18-25 year olds and/or those who are at risk of suicide. This is because SSRI’s increase suicide risk days 4 to 9 of treatment initiation. They typically take 4 to 6 weeks to work.</p>
+<p> Review after 6 weeks is incorrect because an initial review is recommended within 2-4 weeks across all other ages.</p>
+<p>Amitriptyline is a tricyclic antidepressant. These are normal second/third-line.</p>
+<p>There is no sign of drug seeking behaviour and there is no evidence that antidepressants are currently not classed as addictive. The patient has a right to state his preferences in his treatment plan.</p>
+
+</div>
+</div>
+
+<!-- Question 8 -->
+<div class="question">
+  <p><strong>8)	Which type of dementia has risk factors such as hypertension and diabetes and has a step wise progression of disease?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Vascular Dementia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Lewy Body Dementia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Alzheimer’s Disease</button>
+  <button class="option" onclick="selectAnswer(this, false)">Frontotemporal Dementia</button>
+
+  <div class="feedback" style="display:none;">
+<p>Vascular dementia has risk factors such as hypertension, atherosclerosis, IHD, stroke/TIA history, obesity, smoking and diabetes. It has a varied, stepwise progression as microinfarcts and vascular events cause worsening dementia bit by bit.</p>
+
+<p>Lewy Body dementia is infamous for a more rapid decline in cognition. It presents with sleep, mood, visual hallucination and parkinsonism disorders before significant memory loss.</p>
+
+<p>Alzheimer’s disease risk increases with things such as hearing loss and genetic risk factors such as APP, PSEN1, PSEN2 and Down’s syndrome.</p>
+
+
+</div>
+</div>
+
+<!-- Question 9 -->
+<div class="question">
+  <p><strong>9)	A 21 year old rugby player receives IV ketamine during the emergency reduction of an anterior shoulder dislocation. 
+</strong></p><p><strong>What is the mechanism of action of this anaesthetic?
+</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">GABA-A agonist</button>
+  <button class="option" onclick="selectAnswer(this, false)">AMPA receptor blocker</button>
+  <button class="option" onclick="selectAnswer(this, true)">NMDA receptor blocker</button>
+  <button class="option" onclick="selectAnswer(this, false)">Dopamine Norepinephrine Reuptake Inhibitor</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Ketamine acts as a non-competitive antagonist of NMDA. NMDA is an ionotropic glutamate receptor that allows the influx of Ca2+, Na2+ and K+.</p>
+
+<p>AMPA receptor blockers include the anticonvulsant perampanel. AMPA is another ionotropic glutamate receptor.</p>
+
+<p>GABA-A agonists include benzodiazepines, barbiturates, Z-drugs, propofol and alcohol.</p>
+
+<p>Note that the muscle relaxant baclofen targets GABA-B instead.</p>
+
+<p>Examples of DNRIs include bupropion (atypical antidepressant), methylphenidate (Ritalin, ADHD drug).</p>
+
+
+  </div>
+</div>
+
+<!-- Question 10 -->
+<div class="question">
+  <p><strong>10)	An 84 year old man comes into the hospital after a fall. Examination reveals 1/5 strength and a loss of sensation in the right lower limb. The left lower limb and upper limbs appear normal. He has intact speech and has not noticed any changes to his vision. Which artery is most likely to have been affected?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Right Middle Cerebral Artery</button>
+  <button class="option" onclick="selectAnswer(this, false)">Right Anterior Cerebral Artery</button>
+  <button class="option" onclick="selectAnswer(this, false)">Left Middle Cerebral Artery</button>
+  <button class="option" onclick="selectAnswer(this, true)">Left Anterior Cerebral Artery </button>
+
+  <div class="feedback" style="display:none;">
+    <p><strong>Correct answer: Left Anterior Cerebral Artery </strong></p>
+    <p>It must be a left sided stroke as the contralateral side is affected.</p>
+    <p>A middle cerebral artery stroke is more likely to cause problems with vision and hemiparesis and numbness in the upper limb and face too. The pertinent negatives rule this out.</p>
+    <p>An anterior cerebral artery infarct is more likely to affect the lower limb over the upper limb.</p>
+    
+  </div>
+</div>
+<!-- Question 11 -->
+<div class="question">
+  <p><strong>11)	Which of the following Parkinson’s drugs do NOT improve the efficacy of levodopa?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Entacapone</button>
+  <button class="option" onclick="selectAnswer(this, true)">Ropinirole</button>
+  <button class="option" onclick="selectAnswer(this, false)">Carbidopa</button>
+  <button class="option" onclick="selectAnswer(this, false)">Selegiline</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Ropinirole is a direct dopamine agonist. It works independently of levodopa and therefore does not affect its efficacy.</p>
+
+<p>Entacapone is a COMT inhibitor (Catechol-O-methyltransferase). COMT breaks down levodopa into 3-OMD. Other examples include tolcapone and opicapone.</p>
+
+<p>Selegiline is an MAO-B inhibitor (monoamine oxidase B). MAO-B breaks down dopamine in the brain. Other examples include rasagiline and safinamide</p>
+
+<p>Carbidopa is a DDC inhibitor (Dopamine decarboxylase). DDC breaks down levodopa into dopamine outside the blood brain barrier. Dopamine can’t pass the blood brain barrier, only L-DOPA can.</p>
+
+</div>
+</div>
+
+<!-- Question 12 -->
+<div class="question">
+  <p><strong>12)	A 71 year old woman with stage 4 breast cancer has metastases to the bone. The tumour is compressing the left side of the spinal cord at the level of T9-T10 and the consultant identifies Brown-Sequard syndrome after a physical examination.</strong></p><p><strong>Which of the following examination findings align with this diagnosis?</strong></p>
+
+  
+  <button class="option" onclick="selectAnswer(this, false)">Weakness in the left lower limb, loss of all sensation in the lower right limb</button>
+  <button class="option" onclick="selectAnswer(this, false)">Weakness in the right lower limb, loss of fine touch, vibration and proprioception in the lower left limb</button>
+  <button class="option" onclick="selectAnswer(this, false)">Weakness in both the left and right lower limbs, loss of pain and temperature sensation in the lower left limb</button>
+  <button class="option" onclick="selectAnswer(this, true)">Weakness in the left lower limb, loss of fine touch, vibration and proprioception in the left lower limb, loss of pain and temperature sensation in the lower right limb</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Brown Sequard syndrome is most commonly caused by penetrating trauma but can also be caused by infection, tumours, ischemia, spinal disc herniation and transverse myelitis (e.g. from MS). Recall this is an incomplete spinal cord injury where the spinal cord is hemisected, but it presents paradoxically because of where the spinal tracts decussate.</p>
+
+<p>The Corticospinal tract has already decussated in the pyramids in the medulla, so remain ipsilateral. Therefore, there is ipsilateral weakness/paralysis (left side).</p>
+
+<p>The DCML (Dorsal Column Medial Lemniscus) has already decussated in the medulla so there is ipsilateral loss of fine touch, proprioception and vibration (left side).</p>
+
+<p>The Spinothalamic tract decussates at the level of the spinal cord, so is yet to decussate. Therefore, there is contralateral loss of pain and temperature (right side)</p>
+
+</div>
+</div>
+
+<!-- Question 13 -->
+<div class="question">
+  <p><strong>13)	A 61 year old woman with well-controlled schizophrenia is being treated with haloperidol for the past 3 months. She complains to the GP of involuntary, repetitive movements of her hands, tongue and face muscles that are extremely frustrating. The GP observes her lip-smacking during the consultation. </strong></p><p><strong>What movement disorder is she experiencing?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Tardive Dyskinesia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Hemiballismus</button>
+  <button class="option" onclick="selectAnswer(this, false)">Essential tremor</button>
+  <button class="option" onclick="selectAnswer(this, false)">Chorea</button>
+
+  <div class="feedback" style="display:none;">
+   <p>This is tardive dyskinesia. It is caused by the dopamine antagonism from haloperidol and the “tardive” means delayed, which is why it has taken 3 months to appear. Other symptoms she is likely to experience from dopamine antagonism are akathisia (restlessness) and acute dystonia (sudden, painful, sustained contractions). The treatment of persistent tardive dyskinesia is VMAT2 inhibitors such as tetrabenazine.</p>
+
+<p>Hemiballismus is one sided involuntary flinging limb movements caused by a stroke affecting the subthalamic nucleus.</p>
+
+<p>Essential tremor is a rhythmic shaking of the hands, especially during movement. It often runs in families and is a diagnosis of exclusion. Treatment involves propranolol.</p>
+
+<p>Chorea is erratic, jerky and unpredictable limb movement most notably caused by Huntington’s disease.</p>
+
+<p>The involuntary movement disorders can be hard to remember and categorise. Luckily, they are low yield after this semester.</p>
+
+ </div>
+</div>
+
+<!-- Question 14 -->
+<div class="question">
+  <p><strong>14)	Appendicitis can refer pain to the umbilical (bellybutton) region due to its embryological origin in the midgut. This occurs because the brain interprets visceral appendix pain as somatic dermatome pain from the same spinal segment. </strong></p><p><strong>What is the dermatome supplying the umbilical (bellybutton) area?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">L4</button>
+  <button class="option" onclick="selectAnswer(this, false)">T8</button>
+  <button class="option" onclick="selectAnswer(this, true)">T10 (OPG) acts to reduces bone resorption by inhibiting the activation of osteoclasts</button>
+  <button class="option" onclick="selectAnswer(this, false)">L1</button>
+
+  <div class="feedback" style="display:none;">
+    <p>T10 is the associated dermatome for the bellybutton. You can remember this by remembering bellybut(ten). Other important dermatomes are thumb (C6) and nipple (T4). Eventually you will need to learn (almost) all of them for examinations.</p>
+
+<p>L4 is the vertebral level of the umbilicus.</p>
+
+ </div>
+</div>
+
+<!-- Question 15 -->
+<div class="question">
+  <p><strong>15)	Which of the following conditions is most likely to cause an absence of a red reflex?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Strabismus</button>
+  <button class="option" onclick="selectAnswer(this, true)">Cataracts</button>
+  <button class="option" onclick="selectAnswer(this, false)">Glaucoma</button>
+  <button class="option" onclick="selectAnswer(this, false)">Optic Neuritis</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Cataracts are clouding of the lens due to protein accumulation. This directly hinders the red reflex which is the reddish glow when light shone on the pupil reflects off the retina.</p>
+
+<p>Strabismus is a squint and will not occlude this light; there is a normal red reflex</p>
+
+<p>Glaucoma is probably the next best answer. Severely increased intraocular pressure may alter the red reflex but cataracts are much more likely.</p>
+
+<p>Optic neuritis is inflammation of the optic nerve and does not affect the retina or ocular media, so there is a normal red reflex.</p>
+
+<p>Other conditions that will affect the red reflex include retinal detachment, retinoblastoma and vitreous haemorrhage. Many people picked glaucoma for this question in my year, probably because we hadn’t really been taught about cataracts.</p>
+
+ </div>
+</div>
+
+<!-- Question 16 -->
+<div class="question">
+  <p><strong>16)	When a muscle receives an action potential at the neuromuscular junction, Ca2+ is released from the sarcoplasmic reticulum into the cytoplasm in order to initiate muscle contraction. This then returns to the sarcoplasmic reticulum for storage.
+</strong></p><p><strong>Via which protein does Ca2+ in the cytosol re-enter the sarcoplasmic reticulum for storage after a contraction/during muscle relaxation?
+</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">GABA-A</button>
+  <button class="option" onclick="selectAnswer(this, false)">T-tubule</button>
+  <button class="option" onclick="selectAnswer(this, false)">Ryanodine Receptor</button>
+  <button class="option" onclick="selectAnswer(this, true)">SERCA pump</button>
+
+  <div class="feedback" style="display:none;">
+    <p>SERCA stands for Sarco/Endoplasmic Reticulum Calcium ATPase. This actively pumps Ca2+ back into the sarcoplasmic reticulum against the concentration gradient for storage.</p>
+
+<p>Ryanodine receptors (RyRs) are like the opposite of SERCA and release calcium into the cytoplasm from the sarcoplasmic reticulum. Clinically relevant in malignant hyperthermia, a reaction to certain general anaesthetics (like halothane) and muscle relaxants (like succinylcholine) where RyR’s allow too much calcium out, causing excess muscle contraction and high body temperatures. Reversed by dantrolene.</p>
+
+<p>T-tubules are invaginations of sarcolemma (muscle cell membrane) that allow ions such as Ca2+ to enter deep into the muscle cell. However, they are separate from the sarcoplasmic reticulum.</p>
+
+<p>GABA-A are ligand gated Cl- channels found mainly throughout the CNS</p>
+
+</div>
+</div>
+
+<!-- Question 17 -->
+<div class="question">
+  <p><strong>17)	A 83 year old man is recovering from a left middle cerebral artery stroke. When consulted about his swallow reflex, he speaks fluent yet meaningless speech filled with random and made up words. He does not seem to realise that the doctor is struggling to understand what he is saying.
+</strong></p><p><strong>What type of aphasia is present?
+</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Wernicke’s Aphasia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Broca’s Aphasia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Conduction Aphasia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Global Aphasia</button>
+
+  <div class="feedback" style="display:none;">
+    <p>This is Wernicke’s Aphasia, where speech flows easily but lacks meaning. The patient may not realise they are speaking nonsense.</p>
+
+<p>Broca’s aphasia is difficulty initiating speech. Comprehension and understanding is usually intact, but sentences are strained, short and halted. This is a very frustrating form of aphasia, whereas Wernicke’s aphasia can present with a content person.</p>
+
+<p>Conduction aphasia is an issue with the arcuate fasciculus connecting Wernicke’s and Broca’s areas and presents with poor ability to repeat words and phrases despite relatively good comprehension and spontaneous speech.</p>
+
+<p>Global aphasia is the most severe form where speech is both nonfluent and impaired in meaning, comprehension and repetition. Reading and writing are also likely to be impaired.</p>
+
+ </div>
+</div>
+
+<!-- Question 18 -->
+<div class="question">
+  <p><strong>18)	Which of the following lists the layers of the scalp correctly from outer to inner?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Skin, Loose Alveolar Tissue, Connective Tissue (dense), Aponeurosis, Periosteum</button>
+  <button class="option" onclick="selectAnswer(this, true)">Skin, Connective Tissue (dense), Aponeurosis, Loose Alveolar Tissue, Periosteum</button>
+  <button class="option" onclick="selectAnswer(this, false)">Skin, Aponeurosis, Loose Alveolar Tissue, Periosteum</button>
+  <button class="option" onclick="selectAnswer(this, false)">Skin, Connective Tissue (dense), Loose Alveolar Tissue, Aponeurosis, Periosteum</button>
+
+  <div class="feedback" style="display:none;">
+    <p>An easy way to remember this is the mnemonic SCALP</p>
+
+<p>Skin</p>
+
+<p>Connective tissue (dense)</p>
+
+<p>Aponeurosis (galea aponeurotica)</p>
+
+<p>Loose connective tissue (danger zone for infection)</p>
+
+<p>Periosteum</p>
+ </div>
+</div>
+
+<!-- Question 19 -->
+<div class="question">
+  <p><strong>19)What is the mechanism of action of Valium (diazepam)?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">activating GABAA channels</button>
+  <button class="option" onclick="selectAnswer(this, false)">NMDA receptor blocker</button>
+  <button class="option" onclick="selectAnswer(this, false)">calcium channel blocker</button>
+  <button class="option" onclick="selectAnswer(this, false)">mu-Opioid receptor agonist</button>
+
+  <div class="feedback" style="display:none;">
+    <p>There are a lot of drugs to learn for Sem 3. They will definitely come up in your exams (more than the anatomy). Diazepam is a benzodiazepine. Benzos work by activating GABA but they bind onto a separate site between alpha1 and gamma2. Specifically, they increase the frequency that GABAA channels open.</p>
+
+<p>Mu opioid receptor agonists include codeine, fentanyl and morphine.</p>
+
+<p>Calcium channel blockers have a wide range, but the only ones relevant in Sem 3 are the anticonvulsants: gabapentin (also 2nd line for neuropathic pain), pregabalin, ethosuximide (first-line for absence seizures)</p>
+
+<p>NMDA receptor antagonists include ketamine, N2O, memantine (for Alzheimer’s)</p>
+</div>
+</div>
+
+<!-- Question 20 -->
+<div class="question">
+  <p><strong>20)	Which nerve roots are responsible for the biceps reflex?</strong></p>
+
+    <button class="option" onclick="selectAnswer(this, true)">C5, C6</button>
+
+  <button class="option" onclick="selectAnswer(this, false)">C6, C7</button>
+  <button class="option" onclick="selectAnswer(this, false)">C7, C8</button>
+  <button class="option" onclick="selectAnswer(this, false)">C8, T1</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Biceps reflex is C5,C6. The musculocutaneous nerve is the primary pathway.</p>
+
+<p>Supinator/brachioradialis reflex is also C5,C6.</p>
+
+<p>Triceps is C6, C7, C8 (but mainly C7).</p>
+
+</div>
+</div>
+<!-- Question 21 -->
+<div class="question">
+  <p><strong>21)	A 4 year old boy presents to the GP because the mother has noticed that the child has been struggling to hear the television and was tugging at his left ear. The boy has no fever but had an ear infection 5 days ago. On otoscopy of the left ear, the tympanic membrane appears yellow/grey with no light reflex/cone of light. The membrane is retracted and there appears to be some thick yellow mass behind it.</strong></p>
+  <p><strong>What is the most likely diagnosis?</strong></p>
+
+  
+  <button class="option" onclick="selectAnswer(this, false)">Meniere’s disease</button>
+  <button class="option" onclick="selectAnswer(this, false)">Otitis externa</button>
+  <button class="option" onclick="selectAnswer(this, true)">Otitis media with effusion</button>
+  <button class="option" onclick="selectAnswer(this, false)">Tympanic membrane perforation</button>
+
+  <div class="feedback" style="display:none;">
+    <p>This is otitis media with effusion due to the retracted membrane and thick effusion, both secondary to negative pressure in the middle ear due to eustachian tube dysfunction. This is different to acute otitis media because it is post-infection and he is afebrile. This causes conductive hearing loss and pain which can explain the mother’s findings.</p>
+
+<p>Otitis externa is infection and inflammation of the outer ear canal, causing pain worse with tugging.</p>
+
+<p>Meniere’s disease presents with a triad of vertigo, tinnitus and sensorineural hearing loss. It is secondary to increased endolymph pressure and is rare in children.</p>
+
+<p>Tympanic membrane perforation would be seen in otoscopy.</p>
+
+ </div>
+</div>
+
+<!-- Question 22 -->
+<div class="question">
+  <p><strong>22)	A 35 year old woman presents with prolonged morning stiffness in her knees, knuckles and fingers. She is vegetarian. She has the following blood test results:</strong></p>
+<p>Hb: 105g/L (115-160)</p>
+<p>MCV: 94fl (82-100)</p>
+<p>Ferritin: 160ng/ml (20-230)</p>
+<p>Platelets: 360x10^9/L (150-400)</p>
+<p>CRP: 25mg/L (< 5)</p>
+<p>ESR: 60mm/h (< 10) </p>
+<p>Anti-CCP: Positive</p>
+<p>Rheumatoid Factor: Positive</p>
+<p><strong>What is the most likely cause of her anaemia?</strong></p>
+  <button class="option" onclick="selectAnswer(this, true)">Anaemia of chronic disease</button>
+  <button class="option" onclick="selectAnswer(this, false)">Iron deficiency anaemia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Autoimmune haemolytic anaemia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Methotrexate induced folate deficiency</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Rheumatoid arthritis can cause anaemia. The diagnosis is clear with the morning stiffness, autoimmune panel and elevated markers. The mechanism is complex but important. Hepcidin is released by the liver in RA due to inflammation (it is an acute-phase protein). Hepcidin inhibits Ferroportin. Ferroportin normally releases iron from storage in macrophages, hepatocytes and enterocytes (gut cells). When inhibited, less iron is released into the bloodstream to make RBC’s, causing anaemia.</p>
+    <p>Iron deficiency anaemia is incorrect. I tried to mislead you with the risk factor of vegetarianism, but her MCV and Ferritin are normal. </p>
+    <p>Autoimmune haemolytic anaemia is incorrect. Nothing aligns with AIHA apart from a normal MCV. You would expect jaundice, low haptoglobin, high LDH.</p>
+    <p>Methotrexate does cause folate deficiency and is also firstline in rheumatoid arthritis. However, her MCV would be elevated.</p>
+    
+  </div>
+</div>
+
+<!-- Question 23 -->
+<div class="question">
+  <p><strong>23)	A 35 year old woman presents with prolonged morning stiffness in her knees, knuckles and fingers. She is diagnosed with rheumatoid arthritis and started on methotrexate.</strong></p>
+  <p><strong>Considering both her diagnosis and her treatment, which lung pathology is she at increased risk of?</strong></p>
+
+  
+  <button class="option" onclick="selectAnswer(this, false)">Pneumothorax</button>
+  <button class="option" onclick="selectAnswer(this, false)">COPD</button>
+  <button class="option" onclick="selectAnswer(this, false)">Non-small cell lung cancer</button>
+  <button class="option" onclick="selectAnswer(this, true)">Pulmonary fibrosis</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Rheumatoid arthritis is associated with lower zone pulmonary fibrosis. </p>
+    <p>Methotrexate is also associated with lower zone pulmonary fibrosis.</p>
+    <p></p>
+    <p></p>
+</div>
+</div>
+
+<!-- Question 24 -->
+<div class="question">
+  <p><strong>24)	Clozapine is the firstline antipsychotic for treatment-resistant schizophrenia. What test must be regularly ordered for the entire duration of treatment?</strong></p>
+
+  
+  <button class="option" onclick="selectAnswer(this, false)">CXR</button>
+  <button class="option" onclick="selectAnswer(this, false)">ECG</button>
+  <button class="option" onclick="selectAnswer(this, true)">FBC</button>
+  <button class="option" onclick="selectAnswer(this, false)">Kidney function tests</button>
+
+  <div class="feedback" style="display:none;">
+    <p>An FBC must be taken due to the risk of agranulocytosis (low neutrophils) when taking clozapine. FBC’s are weekly for the first 18 weeks, then fortnightly, then every 4 weeks.</p>
+    <p>Myocarditis can occur so ECG is actually not a bad shout. Unfortunately, there is a more correct answer as only some places will do regular ECG’s during clozapine treatment</p>
+    <p></p>
+    <p></p></div>
+</div>
+
+<!-- Question 25 -->
+<div class="question">
+  <p><strong>25)How long can a patient be detained for under Section 3 of the Mental Health Act (1983)?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">24 hours</button>
+  <button class="option" onclick="selectAnswer(this, false)">7 days</button>
+  <button class="option" onclick="selectAnswer(this, false)">28 days</button>
+  <button class="option" onclick="selectAnswer(this, true)">6 months</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Under the Mental Health Act, patients can be detained against their will if they are deemed a risk to themselves or others. The MHA takes precedence over the Mental Capacity Act (MCA). </p>
+    <p>The clinically relevant (examinable) sections are listed below:</p>
+    <p>Section 2 - Admission for assessment up to 28 days</p>
+    <p>Section 3 - Admission for treatment up to 6 months, renewable</p>
+    <p>Section 5 (2) – Urgent assessment by 2 doctors for up to 72 hours</p>
+    <p>Section 5 (4) – Urgent assessment by specially trained nurse for up to 6 hours</p>
+    <p>Section 136 – Police can detain someone for 24 hours for mental health assessment</p>
+    <p>Section 136 was the correct answer in our Sem test and no one knew it. We were only taught 2,3 and 5.</p>
+    </div>
+</div>
+
+<!-- Question 26 -->
+<div class="question">
+  <p><strong>26)What is the strongest risk factor for schizophrenia?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Cannabis use</button>
+  <button class="option" onclick="selectAnswer(this, true)">Family history</button>
+  <button class="option" onclick="selectAnswer(this, false)">Childhood trauma</button>
+  <button class="option" onclick="selectAnswer(this, false)">Tylenol use</button>
+
+  <div class="feedback" style="display:none;">
+    <p>A family history and genetic predisposition is the strongest risk factor for schizophrenia.</p>
+    <p>Cannabis use is also a risk factor for schizophrenia but is not as strong</p>
+    <p>Childhood trauma is also a risk factor for schizophrenia but is not as strong</p>
+    <p>Tylenol is the brand name for paracetamol in the US and causes autism</p></div>
+</div>
+
+<!-- Question 27 -->
+<div class="question">
+  <p><strong>27)Which term best describes gradual, progressive, bilateral age-related hearing loss, particularly of the high frequencies?</strong></p>
+
+  
+  <button class="option" onclick="selectAnswer(this, false)">Tympanosclerosis</button>
+  <button class="option" onclick="selectAnswer(this, false)">Hypermetropia</button>
+  <button class="option" onclick="selectAnswer(this, true)">Presbycusis</button>
+  <button class="option" onclick="selectAnswer(this, false)">Otosclerosis</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Presbycusis is age-related hearing loss, particularly of the high frequencies.</p>
+    <p>Hypermetropia can also be age related but just means long-sightedness. It is a refractive error where images are focused behind the retina and age can cause it as the lens stiffens, making it harder to focus on close-up objects.</p>
+    <p>Tympanosclerosis is scarring of the tympanic membrane due to repeated ear infections, injuries or surgeries. This causes conductive hearing loss.</p>
+    <p>Otosclerosis is the abnormal bone growth around the stapes footplate. Consequently, this causes fixation of the stapes and conductive hearing loss. Typically starts in young adulthood and has a notable drop-off at 2000Hz known as a Carhart Notch on an audiogram. </p></div>
+</div>
+
+<!-- Question 28 -->
+<div class="question">
+  <p><strong>28)A known epileptic has a sudden, severely painful, dark red, blistering rash across his back. Some of the skin has peeled, and it continues to peel even from gentle pressure. Yesterday, he was switched from levetiracetam to carbamazepine due to poor efficacy. He is febrile. </strong></p>
+  <p><strong>What is the most likely diagnosis?</strong></p>
+
+  
+  <button class="option" onclick="selectAnswer(this, false)">Drug Hypersensitivity Syndrome</button>
+  <button class="option" onclick="selectAnswer(this, true)">Stevens-Johnson Syndrome</button>
+  <button class="option" onclick="selectAnswer(this, false)">Anaphylaxis</button>
+  <button class="option" onclick="selectAnswer(this, false)">Bullous Pemphigoid</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Stevens Johnson syndrome is a severe skin reaction presenting with fever, painful skin blistering and peeling caused by medications or infections. The most notable causes are anticonvulsants (carbamazepine, lamotrigine, phenytoin) and antibiotics (sulfamethoxazole, penicillins, cephalosporins, fluoroquinolones). There is normally a positive Nikolsky sign where gentle pressure still causes skin peeling to reveal the dermis. SJS is on a spectrum where there is <10% total skin loss. This becomes toxic epidermal necrolysis when >30% of the body surface loses skin.</p>
+    <p>Anaphylaxis is rapid, hypersensitive, IgE-mediated, mast cell and basophil granulation. It would instead present with shock, smooth muscle contraction and airway obstruction as well as skin changes. Positive Nikolsky sign should not be seen.</p>
+    <p>Drug Hypersensitivity syndrome is the delayed immune mediated reaction to medications characterised by fever, rash, swollen lymph nodes and blood and liver abnormalities. Although it can be caused by anticonvulsants, the Nikolsky sign should be negative.</p>
+    <p>Bullous pemphigoid is an autoimmune disease that targets hemidesmosomes where large tense blisters appear across different areas on the skin, preceded by itchy rashes. Normally occurs in the elderly and treatment includes steroids and immunosuppressants. </p>
+</div>
+</div>
+
+<!-- Question 29 -->
+<div class="question">
+  <p><strong>29)A 63 year old woman presents with long standing, chronic, widespread aching and burning over her body for the past 5 months. Due to the pain she finds it difficult to sleep. Blood tests and autoimmune screen come back completely normal and so does a full body MRI.</strong></p> 
+  <p><strong>What type of pain is this woman suffering from?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Oncopathic pain</button>
+  <button class="option" onclick="selectAnswer(this, false)">Neuropathic pain</button>
+  <button class="option" onclick="selectAnswer(this, false)">Nociceptive pain</button>
+  <button class="option" onclick="selectAnswer(this, true)">Nociplastic pain</button>
+
+  <div class="feedback" style="display:none;">
+   <p>This woman is suffering from fibromyalgia. A diagnosis of exclusion for widespread, chronic (>3 months) pain more common in woman and is debilitating to sleep and daily life. As a functional disorder, all tests come back normal. Pathophysiology is not understood. Firstline treatments include exercise, educational therapies and CBT.</p>
+    <p>Nociceptive pain is “protective” evolutionary pain designed to detect actual or potential tissue damage.</p>
+    <p>Neuropathic Pain is caused by damaged nerves sending dysfunctional pain signals that are not advantageous. It is chronic.</p>
+    <p>Nociplastic pain is chronic pain caused by altered pain processing pathways in the CNS. This process is called central sensitisation and occurs without clear signs of damage to tissue or nerves.</p>
+    <p>Oncopathic was a word I made up to make a 4th option.</p>
+</div>
+</div>
+
+<!-- Question 30 -->
+<div class="question">
+  <p><strong>30)An epileptic patient takes sodium valproate for management of her seizures. She is also put onto a standard dose of warfarin for a recent mechanical heart valve replacement, but her INR (international Normalised Ratio) has raised to 5.7 (2.5-3.5). </strong></p>
+  <p><strong>What is the correct explanation of her raised INR?</strong></p>
+
+  
+  <button class="option" onclick="selectAnswer(this, false)">Sodium valproate increasing volume of distribution of warfarin </button>
+  <button class="option" onclick="selectAnswer(this, false)">Sodium valproate inducing thrombocytopenia</button>
+  <button class="option" onclick="selectAnswer(this, true)">Sodium valproate inhibiting metabolic CYP enzymes in the liver</button>
+  <button class="option" onclick="selectAnswer(this, false)">Sodium valproate binding with warfarin preventing kidney excretion</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Sodium valproate is CYP450 inhibitor. CYP enzymes metabolise certain drugs such as warfarin, so inhibition causes these drugs to stay in the system for longer. This means more vit K inhibition and an increased INR (calculated by Prothrombin Time which is a measure of the extrinsic coagulation pathway).</p>
+    <p>Sodium valproate can cause thrombocytopenia, but this will not explain the raised INR. INR is a measure of coagulation, not platelets.</p>
+    <p>The main complication to remember about valproate is that it is teratogenic and causes spina bifida. This will very likely come up in your exam. </p>
+ </div>
+</div>
+<!-- Question 31 -->
+<div class="question">
+  <p><strong>31)A confused patient achieves a score of 12 on the MMSE and a score of 9 on the MoCA. He has a loss of sense of smell, memory and requires help to do normal daily activities. He is diagnosed with Alzheimer’s disease. </strong></p>
+    <p><strong>What is the mechanism of action of the drug that should be prescribed?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">blocking of a reuptake channel of neurotransmitters</button>
+  <button class="option" onclick="selectAnswer(this, true)">blocking of an enzyme that breaks down a key neurotransmitter</button>
+  <button class="option" onclick="selectAnswer(this, false)">binding onto an allosteric subunit to activate a ligand-gated ion channel</button>
+    <button class="option" onclick="selectAnswer(this, false)">mimicry of a neurotransmitter to cause depolarisation</button>
+
+
+  <div class="feedback" style="display:none;">
+   <p>First you need to know that acetylcholinesterase inhibitors such as Donepezil, Galantamine and Rivastigmine are firstline in Alzheimer’s. Acetylcholinesterase inhibitors work by blocking acetylcholinesterase (enzyme) from degrading the acetylcholine (neurotransmitter).</p>
+    <p>SSRIs, SNRIs and NDRIs are examples that block reuptake channels of neurotransmitters.</p>
+    <p>Benzodiazepines and barbiturates bind onto different allosteric subunits to activate GABAA (the ligand gated ion channel).</p>
+    <p>Examples of agonists that mimic a neurotransmitter include depolarising muscle relaxants (e.g. succinylcholine) and direct dopamine agonists (e.g. pramipexole) and more. </p></div>
+</div>
+
+<!-- Question 32 -->
+<div class="question">
+  <p><strong>32)A cyclist crashes into a pedestrian on the curry mile after trying to ride no hands. The cyclist eyes respond when shouted at but not spontaneously. He can speak normally but does not know where he is or what day it is. He is not mobile but reaches toward his shoulder when his trapezius is squeezed.</strong></p>
+  <p><strong>Calculate his Glasgow Coma Score</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">9</button>
+  <button class="option" onclick="selectAnswer(this, false)">10</button> 
+  <button class="option" onclick="selectAnswer(this, true)">12</button>
+  <button class="option" onclick="selectAnswer(this, false)">13</button>
+
+  <div class="feedback" style="display:none;">
+    <p>His GCS is 12. He gets 3/4 points for eye opening response to sound, 4/5 points for confused speech and 5/6 points for localised movement to pain. GCS can be subjective and is thus taken with a pinch of salt in clinical practice. A GCS score of 8 or less is an indication for urgent intubation.</p>
+    <p></p>
+    <p></p>
+    <p></p> </div>
+</div>
+
+<!-- Question 33 -->
+<div class="question">
+  <p><strong>33)	Which nerve fibres are lightly myelinated and transmit sharp, immediate pain?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">A-alpha fibres</button>
+  <button class="option" onclick="selectAnswer(this, false)">A-beta fibres</button>
+  <button class="option" onclick="selectAnswer(this, true)">A-delta fibres</button>
+  <button class="option" onclick="selectAnswer(this, false)">C-fibres</button>
+
+  <div class="feedback" style="display:none;">
+    <p>A-alpha > A-beta > A-delta > C </p>
+    <p>Fibres go from thickest to thinnest in diameter in this order, as well as from most to least myelinated. C fibres are completely unmyelinated. Because signals travel fastest in the thickest (lower resistance, Ohm’s 2nd law) and most myelinated (saltatory conduction) nerves, this is also the descending order of conduction speed.</p>
+    <p>A-alpha fibres are the fastest and therefore carry proprioception</p>
+    <p>A-beta fibres are the next fastest and carry touch</p>
+    <p>A-delta fibres are next and carry mechanical pain (and cold temperature)</p>    
+    <p>C fibres are slowest and carry slow pain (chemical, thermal)</p>
+    <p>This question was lowk in my Sem test</p>
+</div>
+</div>
+
+<!-- Question 34 -->
+<div class="question">
+  <p><strong>34)	What is the function of amacrine cells in the retina?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Providing lateral inhibition by releasing GABA to add contrast</button>
+  <button class="option" onclick="selectAnswer(this, false)">Relaying visual information from retina to the brain via CNII</button>
+  <button class="option" onclick="selectAnswer(this, false)">Transmitting visual signals from photoreceptors to retinal ganglion cells</button>
+  <button class="option" onclick="selectAnswer(this, false)">Possesses phagocytic properties to protect the retinal epithelium from infection</button>
+
+  <div class="feedback" style="display:none;">
+   <p>Amacrine cells are between the bipolar and ganglion cells in the inner plexiform layer of the eye. They provide lateral inhibition by releasing GABA, providing contrast and adding complexity useful for processes such as motion detection.</p>
+    <p>Ganglion cells in the ganglion cell layer of the retina relay visual information to the brain via CNII.</p>
+    <p>Bipolar cells in the inner nuclear layer of the retina transmit visual signals from photoreceptors to ganglion cells.</p>
+    <p>Microglia are the WBC’s in the retina serving immune functions among many others. This fact is not clinically relevant.</p>
+</div>
+</div>
+
+<!-- Question 35 -->
+<div class="question">
+  <p><strong>35)	Which of the following muscles primarily depresses the hyoid bone?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Omohyoid</button>
+  <button class="option" onclick="selectAnswer(this, false)">Temporalis</button>
+  <button class="option" onclick="selectAnswer(this, false)">Digastric</button>
+  <button class="option" onclick="selectAnswer(this, false)">Lateral pterygoid</button>
+
+  <div class="feedback" style="display:none;">
+   <p>The infrahyoid muscles depress the hyoid bone. These consist of the thyrohyoid, sternohyoid, omohyoid and sternothyroid muscles.</p>
+    <p>Temporalis elevates and retracts the mandible</p>
+    <p>Digastric muscle depresses the mandible and elevates the hyoid bone</p>
+    <p>Lateral pterygoid depresses and protracts the mandible</p>
+</div>
+</div>
+
+<!-- Question 36 -->
+<div class="question">
+  <p><strong>36)	A 91 year old man is brought in by his wife due to suspected dementia. She says his sense of direction is completely gone and he can never find things anymore because he is so spatially unaware. He has had a previous stroke. When asked to draw a clockface, he only draws the right hand side of the clock and leaves the left side blank. </strong></p>
+  <p><strong>Which lobe of the brain is most likely to be damaged?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Frontal Lobe</button>
+  <button class="option" onclick="selectAnswer(this, false)">Occipital Lobe</button>
+  <button class="option" onclick="selectAnswer(this, false)">Temporal Lobe</button>
+  <button class="option" onclick="selectAnswer(this, true)">Parietal Lobe</button>
+
+
+  <div class="feedback" style="display:none;">
+    <p>The man demonstrates hemi-spatial neglect which is usually due to a unilateral lesion to the right parietal lobe, or the temporo-parietal junction. Sense of direction and spatial awareness is also a primary role of the parietal lobe. This is most likely to be caused by the stroke which then doubles the risk of dementia.</p>
+    <p>Occipital lobe damage is normal described with visual changes and difficulty with recognition. </p>
+    <p>Frontal lobe damage presents with loss of executive function, decision making and personality changes. Changes to speech such as Broca’s aphasia can also occur.</p>
+    <p>Temporal lobe damage presents with loss of memory, language (Wernicke’s aphasia), smell, sound and emotions. </p></div>
+</div>
+
+<!-- Question 37 -->
+<div class="question">
+  <p><strong>37)	A bus driver has an ischemic stroke, treated by thrombolysis. How long must he stop driving buses for?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">1 month</button>
+  <button class="option" onclick="selectAnswer(this, false)">6 months</button>
+  <button class="option" onclick="selectAnswer(this, true)">12 months</button>
+  <button class="option" onclick="selectAnswer(this, false)">24 months</button>
+
+  <div class="feedback" style="display:none;">
+   <p>Stroke – Report to DVLA and stop driving for 1 month for car/motorcycle and 12 months for bus, coach or lorry driving.</p>
+    <p></p>
+    <p></p>
+    <p></p> </div>
+</div>
+
+<!-- Question 38 -->
+<div class="question">
+  <p><strong>38)	What is the primary function of ependymal cells in the brain?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Star-shaped cells that regulate the metabolic environment and clear excess neurotransmitters</button>
+  <button class="option" onclick="selectAnswer(this, false)">Perform phagocytosis for immune support within the CNS</button>
+  <button class="option" onclick="selectAnswer(this, true)">Line the ventricles to produce and regulate CSF</button>
+  <button class="option" onclick="selectAnswer(this, false)">Create myelin within the CNS axons</button>
+
+  <div class="feedback" style="display:none;">
+    <p>Ependymal cells line the ventricles to produce and regulate CSF</p>
+    <p>Astrocytes are star-shaped cells that regulate the metabolic environment and clear excess neurotransmitters</p>
+    <p>Microglia perform phagocytosis for immune support within the CNS</p>
+    <p>Oligodendrocytes create myelin within the CNS axons</p></div>
+</div>
+
+<!-- Question 39 -->
+<div class="question">
+  <p><strong>39)	Which of the following is not a core diagnostic feature of Parkinson’s disease?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Bradykinesia</button>
+  <button class="option" onclick="selectAnswer(this, false)">Cogwheel rigidity</button>
+  <button class="option" onclick="selectAnswer(this, false)">Resting tremor</button>
+    <button class="option" onclick="selectAnswer(this, true)">Internuclear ophthalmoplegia</button>
+
+
+  <div class="feedback" style="display:none;">
+   <p>This is seen in MS when there is damage to the medial longitudinal fasciculus in the brainstem. It is the inability to adduct the “further away” eye when looking outwards, causing nystagmus and double vision.</p>
+    <p>Recall that for the diagnosis of Parkinson's, you need bradykinesia and at least 1 of either rigidity or resting tremor </p>
+    <p></p>
+    <p></p>
+  </div>
+</div>
+
+<!-- Question 40 -->
+<div class="question">
+  <p><strong>40)	Which of the following statements is correct?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">The substantia nigra pars reticulata accumulates amyloid-beta plaques that causes Parkinson’s</button>
+  <button class="option" onclick="selectAnswer(this, true)">The direct pathway acts via D1 receptors and the indirect pathway acts via D2 receptors in the thalamus</button>
+  <button class="option" onclick="selectAnswer(this, false)">Pramipexole is a dopamine agonist used in Parkinson’s that targets D1 receptors in the brain</button>
+  <button class="option" onclick="selectAnswer(this, false)">D1,D3,D5 receptors are Gs coupled and D2,D4 are Gq coupled</button>
+
+  <div class="feedback" style="display:none;">
+   <p>The direct pathway sends dopamine to D1 receptors and the indirect pathway sends dopamine to the D2 receptors in the thalamus. They then subsequently release GABA to different parts of the globus pallidus. The direct pathway disinhibits the thalamus - stimulating movement. The indirect pathway inhibits the thalamus – decreasing movement.</p>
+    <p>Pramipexole is a dopamine agonist but targets D2 not D1 receptors. Recall all dopamine drugs you learn this year act on D2, including the antipsychotics.</p>
+    <p>The substantia nigra pars compacta, not reticulata accumulates alpha-synuclein. Amyloid beta is involved in Alzheimer’s. </p>
+    <p>D1,D5 receptors are Gs (increase cAMP) and D2,3,4 are Gi (decrease cAMP) coupled.</p> </div>
+</div>
+<!-- Question 41 -->
+<div class="question">
+  <p><strong>41)	Which of the following presentations fits best with a subarachnoid haemorrhage?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Bruising behind the ear and between the eyes 24 hours after head trauma</button>
+  <button class="option" onclick="selectAnswer(this, false)">Headache, nausea, confusion and drowsiness with a crescent shaped collection of blood on CT</button>
+  <button class="option" onclick="selectAnswer(this, false)">Initial loss of consciousness, then a period of alertness before rapid deterioration of mental status</button>
+  <button class="option" onclick="selectAnswer(this, true)">Sudden onset “thunderclap” headache described as worst ever experienced. Photophobia and nausea and xanthochromia on lumbar puncture</button>
+
+  <div class="feedback" style="display:none;">
+   <p>A subarachnoid haemorrhage is classic for sudden “worst ever” thunderclap headache. Sometimes not detected on CT so an LP is done 12 hours after onset if suspected. Xanthochromia (yellow CSF from blood breakdown) is a positive finding.</p>
+    <p>Initial loss of consciousness, then a period of alertness before rapid deterioration of mental status describes the lucid interval of an epidural haematoma as the expansion of blood creates a mass effect and an increase in ICP (intracranial pressure)</p>
+    <p>A crescent shaped collection of blood on CT describes a subdural haematoma where bleeding crosses suture lines (as opposed to epidural)</p>
+    <p>Bruising behind the ear is Battle’s sign and bruising between the eyes is Panda/Raccoon eyes. Both are signs of blood pooling from a basilar skull fracture. </p></div>
+</div>
+
+<!-- Question 42 -->
+<div class="question">
+  <p><strong>42)	A 45 year old woman has multiple white plaques seen on an MRI of the brain. She had an episode of worsening vision 4 months ago with visual acuity of 9/12 in her left eye and 6/12 in her right eye. She reveals that bending her neck can sometimes cause an electric shock sensation down her spine. </strong></p> 
+   <p><strong>Which of the following results would be expected, considering her likely diagnosis?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Central lung opacity on CXR</button>
+  <button class="option" onclick="selectAnswer(this, false)">Hypotonia of the lower limbs</button>
+    <button class="option" onclick="selectAnswer(this, true)">Oligoclonal bands in CSF</button>
+
+  <button class="option" onclick="selectAnswer(this, false)">Swan-neck deformity of the fingers and ulnar deviation</button>
+
+  <div class="feedback" style="display:none;">
+   <p>The diagnosis is multiple sclerosis. MS is an autoimmune condition that has flares disseminated in space and time. Multiple white plaques on MRI indicate dissemination in space. Dissemination in time is likely with the fall in visual acuity 4 months ago (likely optic neuritis) and the shocks on flexion of the neck is Lhermitte’s sign indicating demyelination of the spinal cord, classic of MS.</p>
+    <p>Oligoclonal bands are inflammatory markers that can be found after lumbar puncture in MS and can be a useful diagnostic tool. However, they don’t diagnose MS alone. </p>
+    <p>Hypotonia of the lower limbs does not occur because MS affects UMNs. Hypertonia occurs instead. Symmetrical hypotonia can occur in Guillain Barre Syndrome.</p>
+    <p>Central lung opacity in CXR as well as neurological symptoms could indicate a small cell lung cancer causing Lambert Eaton Syndrome as a paraneoplastic syndrome. You’ll consider this a differential next year. </p>
+    <p>Swan-neck deformity and ulnar deviation of the digits are hallmark signs of severe rheumatoid arthritis. The eye involvement and lack of joint involvement mentioned, as well as the MRI rules this out. </p>
+</div>
+</div>
+
+<!-- Question 43 -->
+<div class="question">
+  <p><strong>43)	Which cranial nerve palsy is most likely to cause hyperacusis?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">CNV</button>
+  <button class="option" onclick="selectAnswer(this, true)">CNVII</button>
+  <button class="option" onclick="selectAnswer(this, false)">CNVIII</button>
+  <button class="option" onclick="selectAnswer(this, false)">CNX</button>
+
+  <div class="feedback" style="display:none;">
+    <p>This is a very tricky question because although the cochlear branch of CNVIII is responsible for hearing, CNVIII palsy causes sensorineural hearing loss, not hyperacusis (louder noises). </p>
+    <p>Additionally, although CNV palsy could theoretically cause hyperacusis as it supplies the tensor tympani muscle (tensing the tympanic membrane to dampen loud sounds), it is a rare cause. Instead, tensor tympani hyperacusis is normally triggered by an excessive contraction from acoustic shock (loud noise), stress, anxiety, trauma or eustachian tube dysfunction. </p>
+    <p>CNVII is far more likely to cause hyperacusis due to the loss of innervation to the stapedius muscle. The stapedius muscle dampens the Stapes’ vibrations and this palsy is much more common. This is often seen in Bell’s Palsy.</p>
+    <p>CNX has no role in sound. ts vagus nerve </p>
+</div>
+</div>
+
+<!-- Question 44 -->
+<div class="question">
+  <p><strong>44)	Which of the below eventually develops into the thalamus?</strong></p>
+    
+
+
+  
+
+  <button class="option" onclick="selectAnswer(this, true)">Prosencephalon</button>
+  <button class="option" onclick="selectAnswer(this, false)">Mesencephalon</button>
+  <button class="option" onclick="selectAnswer(this, false)">Rhombencephalon</button>
+  <button class="option" onclick="selectAnswer(this, false)">Myelencephalon</button>
+
+  <div class="feedback" style="display:none;">
+    <p>This is a tricky neuroembryology question. The prosencephalon is the embryonic precursor of the forebrain that turns into the telencephalon and diencephalon. The telencephalon forms the cerebrum, and the diencephalon forms all of the thalamus’s: the thalamus, hypothalamus and epithalamus</p>
+    <p>The Mesencephalon forms the midbrain</p>
+    <p>The Rhombencephalon forms the hindbrain. This consists of the metencephalon structures (pons and cerebellum) and the myelencephalon (medulla oblongata)</p>
+    <p>The myelencephalon is thus developed from the rhombencephalon and does not form the thalamus.</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/1302_Brain_Vesicle_DevN.jpg/1200px-1302_Brain_Vesicle_DevN.jpg">
+</div>
+</div>
+
+<!-- Question 45 -->
+<div class="question">
+  <p><strong>45)	A 33 year old woman with multiple sclerosis tells you about their history during a clinical placement. She tells you, “It started 11 years ago when I noticed my vision was getting worse in Uni. That lasted for 2 weeks and then it got better and went away again. Then 2 years later it started again but this time I noticed I was losing my balance, my muscles got way weaker and I kept getting like brain fog. It’s just gotten worse ever since, I don’t think I’m ever getting better. I’m really worried that I haven’t been the same for 9 years”</strong></p>
+    <p><strong>According to their history, which type of MS do they have?</strong></p>
+
+
+  <button class="option" onclick="selectAnswer(this, false)">Relapsing-remitting </button>
+  <button class="option" onclick="selectAnswer(this, false)">Primary Progressive</button>
+  <button class="option" onclick="selectAnswer(this, false)">Progressive-relapsing</button>
+    <button class="option" onclick="selectAnswer(this, true)">Secondary Progressive</button>
+
+
+  <div class="feedback" style="display:none;">
+   <p>It is secondary progressive because they had the initial relapsing-remitting phase from the 2 week episode that resolved. Since then, they have had subsequent worsening without recovery. </p>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA-3SwokcXQOOz8V7dsOf4eBrzYrxu9Yphvw&s">
+</div>
+</div>
+
+<!-- Question 46 -->
+<div class="question">
+  <p><strong>46)	A 5 year old girl presents to the clinic with an ataxic gait. She is afebrile, has coarse nystagmus and her arms are floppy. Her speech is broken and there is a notable intention tremor when she attempts to reach the doctor’s finger on the finger to nose test. Her mother also mentions that she had chicken pox 2 weeks ago. </strong></p>
+  <p><strong>Which of the following diagnoses is most likely?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Multiple sclerosis</button>
+  <button class="option" onclick="selectAnswer(this, true)">Post-viral Cerebellar Dysfunction</button>
+  <button class="option" onclick="selectAnswer(this, false)">HSV encephalitis</button>
+  <button class="option" onclick="selectAnswer(this, false)">Ischemic stroke</button>
+
+  <div class="feedback" style="display:none;">
+   <p>Her presentation shows clear cerebellar dysfunction. Recall the cerebellum’s main role is balance and coordination. A mnemonic for cerebellar dysfunction is DANISH:</p>
+    <p>Dysdiadochokinesia (difficulty in carrying out rapid, alternating movements)</p>
+    <p>Ataxia</p>
+    <p>Nystagmus (coarse)</p>
+    <p>Intention tremor</p>
+    <p>Scanning speech</p>
+    <p>Hypotonia</p>
+    <p>She shows all 6 signs and has had a recent viral infection (Varicella Zoster). Post viral cerebellar dysfunction (sometimes called cerebellar ataxia) is more common in younger people.</p>
+    <p>She is too young for MS. There is also a lack of visual changes and no evidence of dissemination in time.</p>
+    <p>Encephalitis is a good differential, but she is afebrile and more neurological symptoms would be expected such as confusion, personality changes and seizures.</p>
+    <p>She is very young for ischemic stroke and there is a lack of one-sided symptoms such as facial drooping, hemianopia and hemiparesis.</p>
+</div>
+</div>
+
+<!-- Question 47 -->
+<div class="question">
+  <p><strong>47)	Which of the following questionnaire results would indicate a prescription of SSRIs?</strong></p>
+  <button class="option" onclick="selectAnswer(this, true)">PHQ-9 score of 27</button>
+  <button class="option" onclick="selectAnswer(this, false)">GAD-7 score of 2</button>
+  <button class="option" onclick="selectAnswer(this, false)">NIHSS score of 42</button>
+  <button class="option" onclick="selectAnswer(this, false)">DAS28 of 28</button>
+
+  <div class="feedback" style="display:none;">
+   <p>PHQ-9 is the patient health questionnaire that assesses depression. A score of 15 and above indicates moderately severe depression that will require treatment. </p>
+    <p>GAD-7 score is the generalized anxiety disorder scale which assesses anxiety. A score of 10 and above is a common cut-off point for GAD. Although firstline treatment can involve SSRI’s over CBT depending on patient preference, a GAD sore of 2 indicates absent/minimal anxiety.</p>
+    <p>NIHSS is the National Institutes of Health Stroke Scale which scores post-stroke severity. 42 is the highest and most severe score signifying gross impairment. SSRIs are not indicated in stroke.</p>
+    <p>DAS28 is a scoring system for rheumatoid arthritis disease activity. You don't need to worry about the boundaries or how to read the DAS28, just know it involves the right and left PIPs, MCPs, elbows, shoulders and knees as well as ESR and CRP which are inflammatory blood tests</p>
+</div>
+</div>
+
+<!-- Question 48 -->
+<div class="question">
+  <p><strong>48)	Which of the following is a monoclonal antibody?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Glatiramer Acetate</button>
+  <button class="option" onclick="selectAnswer(this, false)">Prednisolone</button>
+  <button class="option" onclick="selectAnswer(this, false)">Alteplase</button>
+    <button class="option" onclick="selectAnswer(this, true)">Rituximab</button>
+
+
+  <div class="feedback" style="display:none;">
+    <p>Rituximab is a monoclonal antibody that works by targeting CD20 positive B cells. It is used in treatment of rheumatoid arthritis, vasculitis and certain cancers. An easy way to identify monoclonal antibodies is the suffix “-mab”. Examples of other monoclonal antibodies you should know include infliximab, trastuzumab and omalizumab (the last 2 from Y1).</p>
+    <p>Prednisolone is a corticosteroid with many, many uses. A good strategy in the progress test is to choose it whenever you see it.</p>
+    <p>Glatiramer acetate is a synthetic peptide used in MS that function via biological mimicry of myelin basic protein, redirecting immune cells away from oligodendrocytes.</p>
+    <p>Alteplase is a thrombolytic agent used in ischemic strokes, myocardial infarctions and massive pulmonary embolisms. It converts plasminogen into plasmin which breaks down fibrin in blood clots.</p>
+</div>
+</div>
+
+<!-- Question 49 -->
+<div class="question">
+  <p><strong>49)	Which of the following is NOT a risk factor for MS?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, false)">Female Sex</button>
+  <button class="option" onclick="selectAnswer(this, false)">Vitamin D deficiency</button>
+    <button class="option" onclick="selectAnswer(this, true)">PSEN1 gene mutation</button>
+
+  <button class="option" onclick="selectAnswer(this, false)">EBV (Epstein-Barr Virus) Infection</button>
+
+  <div class="feedback" style="display:none;">
+   <p>PSEN1 gene mutation is a risk factor for Alzheimer’s, not MS. This is because PSEN genes code proteins that form amyloid beta which can contribute to plaques if dysregulated. </p>
+    <p>MS is a female predominant disease with a 2/3:1 ratio of women to men</p>
+    <p>MS is linked to vitamin D deficiency and is theorised to be why it is more prevalent in fairer skin populations.</p>
+    <p>EBV Infection is a known trigger of MS and other autoimmune conditions and cancers. Examples include Burkitt’s lymphoma, Hodgkin’s lymphoma and lupus.</p>
+</div>
+</div>
+
+<!-- Question 50 -->
+<div class="question">
+  <p><strong>50)	Which of the following terms describes when the cingulate gyrus herniates underneath the falx cerebri during increased ICP (Intracranial Pressure)?</strong></p>
+
+  <button class="option" onclick="selectAnswer(this, true)">Subfalcine herniation</button>
+  <button class="option" onclick="selectAnswer(this, false)">Central herniation</button>
+  <button class="option" onclick="selectAnswer(this, false)">Transtentorial herniation</button>
+  <button class="option" onclick="selectAnswer(this, false)">Chiari Malformation Type 4</button>
+
+  <div class="feedback" style="display:none;">
+<p>Honestly the only reason I added this question is because it came up when I did the Sem 3 exams. You can imagine how pissed and confused we all were. </p>
+    <p>They obviously never taught us but there are 3 clinically important brain herniation syndromes: (low yield)</p>
+    <p>1)	Transtentorial herniation – where the medial temporal lobe (especially the uncus) herniates through the tentorial notch (the free inner edge of the cerebellar tentorium) so it goes downwards. This presents with a triad of an ipsilateral, unresponsive “blown” pupil, contralateral hemiplegia and decreased level of consciousness.</p>
+    <p>2)	Central herniation – where the brainstem becomes downwardly displaced. Kind of similar to Chiari malformation but those are congenital. This can cause pupil changes and Cushing’s triad (irregular respiration, bradycardia, hypertension) due to brainstem compression</p>
+    <p>3)	Subfalcine herniation – Where the cingulate gyrus herniates under the falx cerebri (essentially one side of the brain crossing the midline). This can compress the anterior cerebral artery and cause an ACA stroke.</p>
+    <p>Chiari Malformation Type 4 is congenital hypoplasia and aplasia of the cerebellum due to spina bifida. </p>
+    <p>I lowkenuinely hope this comes up on your exams because I’m still salty about it and I hope everyone gets this really niche question correct on the Sem test.</p>
+        
+</div>
+</div>
+<!-- Question 51 -->
+<div class="question">
+<p><strong>51)	An injury to the posterior triangle of the neck is most likely to affect which anatomical structure?</strong></p>
+  <button class="option" onclick="selectAnswer(this, true)">CNXI</button>
+  <button class="option" onclick="selectAnswer(this, false)">Internal carotid artery</button>
+  <button class="option" onclick="selectAnswer(this, false)">CNXII</button>
+  <button class="option" onclick="selectAnswer(this, false)">Submandibular gland</button>
+
+  <div class="feedback" style="display:none;">
+    <p>The posterior triangle of the neck is bordered by the sternocleidomastoid anteriorly, trapezius posteriorly, and the middle third of the clavicle inferiorly. Important structures include the brachial plexus, external jugular vein, subclavian artery, CNXI and phrenic nerve.</p>
+    <p>The submandibular gland is in the submandibular triangle. </p>
+    <p>The internal carotid artery is in the carotid triangle</p>
+    <p>CNXII passes through the carotid triangle and into the submandibular triangle.</p>
+    <p>Triangles of the Kirk are always easy marks.</p> 
+</div>
+</div>
+<!-- Question 52 -->
+<div class="question">
+<p><strong>52)	In which position will the eye be seen in oculomotor nerve palsy?</strong></p>
+  <button class="option" onclick="selectAnswer(this, true)">Downwards and outwards</button>
+  <button class="option" onclick="selectAnswer(this, false)">Straight but unable to look downwards</button>
+  <button class="option" onclick="selectAnswer(this, false)">Inwards</button>
+  <button class="option" onclick="selectAnswer(this, false)">Downwards</button>
+
+  <div class="feedback" style="display:none;">
+    <p>The oculomotor nerve supplies all extraocular muscles apart from the superior oblique (which primarily depresses the eye) and lateral rectus (which abducts the eye). Therefore the eye will be depressed and abducted i.e. down and out.</p>
+    <p>Difficulty looking downwards is seen in trochlear nerve palsy as weakness in the superior oblique causes difficulty depressing, abducting and intorting the eye. This presents as head tilting and a classic “double vision when walking down stairs”</p>
+    <p>Esotropia (inwards) is often seen in abducens nerve palsy.</p>
+    <p>Hypotropia (downwards) can be caused by high ICP causing “sunset eyes” most often seen in infants with hydrocephalus. </p> 
+    <p>Thanks for doing this exam guys, making a website took a longer than expected to make. I made it because peer.io wanted to charge yall and i legit couldnt find a platform to do these for free. I even tried google forms. good luck on your exams :)</p> 
+</div>
+</div>
+<div id="final-score" style="display:none; text-align:center; margin:40px 0; padding:20px; border-top:2px solid #ccc;">
+</div>
+<button id="next-btn" style="display:none; margin:20px auto; padding:10px 15px;">
+  Next Question
+</button>
+
+<!-- FINAL SCORE -->
+<div id="final-score"></div>
+
+</body>
+</html>
